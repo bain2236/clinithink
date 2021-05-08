@@ -1,7 +1,7 @@
 import sys
 import itertools
 
-def readWords(filename):
+def read_words(filename):
     words = []
     try:
         with open(filename, "r") as f:
@@ -11,24 +11,29 @@ def readWords(filename):
         print('Error reading file')
     return words
 
-def anagramSolver(words):
+def anagram_solver(words):
     output = []
     # would turn this into a generator for better performance if the file size is very large
     for word in words:
         # itertools.permutations can return duplicates so create a dict and cast that into a list 
         permutations = list(dict.fromkeys(["".join(perm) for perm in itertools.permutations(word)]))
-        # first permutation is just the word so pop it before searching for anagrams
+        # first permutation is just the original word so pop it before searching for anagrams otherwise the word itself gets found which isn't an anagram
         permutations.pop(0)
         for permutation in permutations:
             if permutation in words:
                 output.append(permutation)
-    return output
+    # make the anagram list into an ordered set 
+    print('anagrams found {0}'.format(set(dict.fromkeys(output))))
+    return set(dict.fromkeys(output)) 
+    
+    
 
 if __name__ == '__main__':
-    words = readWords(sys.argv[1])
+    words = read_words(sys.argv[1])
     if len(words) > 0:
-        anagrams = anagramSolver(words)
+        anagrams = anagram_solver(words)
+        
         if len(anagrams) > 0:
-            print(list(dict.fromkeys(anagrams)))
+            print(anagrams)
         else:
-            print("no anagram found")
+            print("no anagram found")  
